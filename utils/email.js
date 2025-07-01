@@ -12,8 +12,8 @@ module.exports = class Email {
 
   newTransport() {
     if (process.env.NODE_ENV === 'production') {
-      console.log('MAILGUN_USER:', process.env.MAILGUN_USER);
-      console.log('MAILGUN_PASS:', process.env.MAILGUN_KEY);
+      //console.log('MAILGUN_USER:', process.env.MAILGUN_USER);
+      //console.log('MAILGUN_PASS:', process.env.MAILGUN_KEY);
       return nodemailer.createTransport({
         host: 'smtp.mailgun.org',
         port: 587,

@@ -13,7 +13,7 @@ exports.getOverview = catchAsync(async (req, res, next) => {
 
 exports.getTour = async (req, res, next) => {
   const slug = req.params.slug;
-  console.log(slug);
+  //console.log(slug);
   const tour = await Tour.findOne({ slug }).populate({
     path: 'reviews',
     fields: 'review ratings user'
@@ -21,7 +21,7 @@ exports.getTour = async (req, res, next) => {
   if (!tour) {
     return next(new AppErr('There is no tour with this name', 404));
   }
-  console.log(tour);
+  //console.log(tour);
   res.status(200).render('tour', {
     title: `${tour.name} Tour`,
     tour
@@ -51,7 +51,7 @@ exports.getMyTours = async (req, res) => {
 };
 
 exports.updateUser = async (req, res, next) => {
-  console.log('UPDATE', req.body);
+  //console.log('UPDATE', req.body);
   const user = await User.findByIdAndUpdate(
     req.user.id,
     {
