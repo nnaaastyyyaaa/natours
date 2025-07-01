@@ -1,17 +1,27 @@
 const nodemailer = require('nodemailer');
+require('dotenv').config();
 const pug = require('pug');
 const htmlToText = require('html-to-text');
 module.exports = class Email {
   constructor(user, url) {
     (this.to = user.email),
-      (this.firstName = user.name(' ')[0]),
+      (this.firstName = user.name.split(' ')[0]),
       (this.url = url),
-      (this.from = 'Anastasia');
+      (this.from = `Anastasia <${process.env.MAILGUN_USER}>`);
   }
 
   newTransport() {
     if (process.env.NODE_ENV === 'production') {
-      return 1;
+      console.log('MAILGUN_USER:', process.env.MAILGUN_USER);
+      console.log('MAILGUN_PASS:', process.env.MAILGUN_KEY);
+      return nodemailer.createTransport({
+        host: 'smtp.mailgun.org',
+        port: 587,
+        auth: {
+          user: process.env.MAILGUN_USER,
+          pass: process.env.MAILGUN_KEY
+        }
+      });
     }
     return nodemailer.createTransport({
       host: process.env.EMAIL_HOST,
@@ -38,7 +48,7 @@ module.exports = class Email {
       to: this.to,
       subject,
       html,
-      text: htmlToText.fromString(html)
+      text: htmlToText.convert(html)
     };
 
     await this.newTransport().sendMail(mailOptions);
@@ -46,5 +56,12 @@ module.exports = class Email {
 
   async sendWelcome() {
     await this.send('welcome', 'Welcome to the Natours Family');
+  }
+
+  async sendPasswordReset() {
+    await this.send(
+      'passwordReset',
+      'Your password reset token(valid for only 10 minutes)'
+    );
   }
 };
